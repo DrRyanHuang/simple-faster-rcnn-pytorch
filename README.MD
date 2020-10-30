@@ -1,3 +1,7 @@
+English|[中文](https://github.com/DrRyanHuang/simple-faster-rcnn-pytorch/blob/master/README_CN.MD)
+
+
+
 # A Simple and Fast Implementation of Faster R-CNN
 
 ## 1. Introduction
