@@ -28,33 +28,38 @@
 
 
 
-## 2. Performance
+## 2. 运行表现
 
-### 2.1 mAP
+### 2.1 `mAP`上
 
-VGG16 train on `trainval` and test on `test` split. 
+`VGG16`在`VOC2007 trainval`上训练，而在`VOC2007 test`上测试.
 
-**Note**: the training shows great randomness, you may need a bit of luck and more epoches of training to reach the highest mAP. However, it should be easy to surpass the lower bound. 
+**注意**: 训练显然有很大的随机性，可能需要一点运气和更多的训练时间才能达到最高的`mAP`，但是应该很容易超过下限嘿嘿
 
-|              Implementation              |     mAP     |
-| :--------------------------------------: | :---------: |
-| [origin paper](https://arxiv.org/abs/1506.01497) |    0.699    |
-|    train with caffe pretrained model     | 0.700-0.712 |
-| train with torchvision pretrained model  | 0.685-0.701 |
-| model converted from [chainercv](https://github.com/chainer/chainercv/tree/master/examples/faster_rcnn) (reported 0.706) |   0.7053    |
+|                        Implementation                        |   `mAP`值   |
+| :----------------------------------------------------------: | :---------: |
+|          [原论文](https://arxiv.org/abs/1506.01497)          |    0.699    |
+|                使用`caffe`预训练模型进行训练                 | 0.700-0.712 |
+|             使用`torchvision`预训练模型进行训练              | 0.685-0.701 |
+| 使用由[chainercv](https://github.com/chainer/chainercv/tree/master/examples/faster_rcnn)导出的模型 (原项目中mAP为0.706) |   0.7053    |
 
-### 2.2 Speed
+### 2.2 速度上
 
-|              Implementation              |   GPU    | Inference | Trainining |
-| :--------------------------------------: | :------: | :-------: | :--------: |
-| [origin paper](https://arxiv.org/abs/1506.01497) |   K40    |   5 fps   |     NA     |
-|                 This[1]                  | TITAN Xp | 14-15 fps |   6 fps    |
-| [pytorch-faster-rcnn](https://github.com/ruotianluo/pytorch-faster-rcnn) | TITAN Xp | 15-17fps  |    6fps    |
+|                        Implementation                        |   `GPU`    | Inference | Trainining |
+| :----------------------------------------------------------: | :--------: | :-------: | :--------: |
+|       [origin paper](https://arxiv.org/abs/1506.01497)       |   `K40`    |   5 fps   |     NA     |
+|                           This[1]                            | `TITAN Xp` | 14-15 fps |   6 fps    |
+| [pytorch-faster-rcnn](https://github.com/ruotianluo/pytorch-faster-rcnn) | `TITAN Xp` | 15-17 fps |   6 fps    |
 
-[1]: make sure you install cupy correctly and only one program run on the GPU. The training speed is sensitive to your gpu status. see [troubleshooting](troubleshooting) for more info. Morever it's slow in the start of the program -- it need time to warm up.
+[1]:  确保正确安装`Cupy`，并且`GPU`上仅运行这一个程序.  训练速度对您的`GPU`状态很敏感。 
 
-It could be faster by removing visualization, logging, averaging loss etc.
-## 3. 安装以来环境
+有关更多信息，请参见[问题解决](问题解决).  此外，在程序启动时它很——需要时间进行预热。
+
+通过关闭可视化和写日志等功能可以使程序运行更快.
+
+
+
+## 3. 安装依赖环境
 
 这是一个使用`anaconda`从头开始创建环境的示例：
 
@@ -72,15 +77,13 @@ pip install visdom scikit-image tqdm fire ipdb pprint matplotlib torchnet
 nohup python -m visdom.server &
 ```
 
-If you don't use anaconda, then:
+如果老铁你不用`anaconda`，那么：
 
-- install PyTorch with GPU (code are GPU-only), refer to [official website](http://pytorch.org)
+- 安装`GPU`版本的`Pytorch`(本代码只用在GPU上), refer to [official website](http://pytorch.org)
+- 安装其他依赖包:  `pip install visdom scikit-image tqdm fire ipdb pprint matplotlib torchnet`
+- 开启`visdom`服务以进行可视化
 
-- install other dependencies:  `pip install visdom scikit-image tqdm fire ipdb pprint matplotlib torchnet`
-
-- start visdom for visualization
-
-```Bash
+```
 nohup python -m visdom.server &
 ```
 
@@ -88,18 +91,19 @@ nohup python -m visdom.server &
 
 ## 4. Demo
 
-Download pretrained model from [Google Drive](https://drive.google.com/open?id=1cQ27LIn-Rig4-Uayzy_gH5-cW-NRGVzY) or [Baidu Netdisk( passwd: scxn)](https://pan.baidu.com/s/1o87RuXW)
+可以从 [Google Drive](https://drive.google.com/open?id=1cQ27LIn-Rig4-Uayzy_gH5-cW-NRGVzY) 或者 [Baidu Netdisk(passwd: scxn)](https://pan.baidu.com/s/1o87RuXW) 下载预训练模型
+
+可以查看 [demo.ipynb](https://github.com/DrRyanHuang/simple-faster-rcnn-pytorch/blob/master/demo.ipynb) 以获取更多细节.
 
 
-See [demo.ipynb](https://github.com/chenyuntc/simple-faster-rcnn-pytorch/blob/master/demo.ipynb) for more detail.
 
-## 5. Train
+## 5. 训练
 
-### 5.1 Prepare data
+### 5.1 数据准备
 
-#### Pascal VOC2007
+#### `Pascal VOC2007`
 
-1. Download the training, validation, test data and VOCdevkit
+1. 下载`VOC training, validation, test`数据集，别忘了 `VOCdevkit`
 
    ```Bash
    wget http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCtrainval_06-Nov-2007.tar
@@ -107,7 +111,7 @@ See [demo.ipynb](https://github.com/chenyuntc/simple-faster-rcnn-pytorch/blob/ma
    wget http://host.robots.ox.ac.uk/pascal/VOC/voc2007/VOCdevkit_08-Jun-2007.tar
    ```
 
-2. Extract all of these tars into one directory named `VOCdevkit`
+2. 解压所有这些tar文件，并将其放在`VOCdevkit`文件夹中
 
    ```Bash
    tar xvf VOCtrainval_06-Nov-2007.tar
@@ -115,7 +119,7 @@ See [demo.ipynb](https://github.com/chenyuntc/simple-faster-rcnn-pytorch/blob/ma
    tar xvf VOCdevkit_08-Jun-2007.tar
    ```
 
-3. It should have this basic structure
+3. 文件的结构应该是这样的：
 
    ```Bash
    $VOCdevkit/                           # development kit
@@ -124,47 +128,51 @@ See [demo.ipynb](https://github.com/chenyuntc/simple-faster-rcnn-pytorch/blob/ma
    # ... and several other directories ...
    ```
 
-4. modify `voc_data_dir` cfg item in `utils/config.py`, or pass it to program using argument like `--voc-data-dir=/path/to/VOCdevkit/VOC2007/` .
+4. 修改`utils/config.py`文件中的 `voc_data_dir` 配置项，或者运行程序通过`--voc-data-dir=/path/to/VOCdevkit/VOC2007/` 来传入参数
 
 
-### 5.2 [Optional]Prepare caffe-pretrained vgg16
 
-If you want to use caffe-pretrain model as initial weight, you can run below to get vgg16 weights converted from caffe, which is the same as the origin paper use.
+
+### 5.2 [可选]准备`caffe`预训练vgg16模型
+
+如果要使用经过`caffe`训练的模型作为初始权重，则可以运行下面的代码修改`vgg16`的权重参数，没错，和原论文是一样滴
 
 ````Bash
 python misc/convert_caffe_pretrain.py
 ````
 
-This scripts would download pretrained model and converted it to the format compatible with torchvision. If you are in China and can not download the pretrain model, you may refer to [this issue](https://github.com/chenyuntc/simple-faster-rcnn-pytorch/issues/63)
+该脚本将下载预训练模型并将其转换为与`Torchvision`兼容的格式，如果你在中国且不能下载这个预训练模型，那么可以参考这个[issue](https://github.com/chenyuntc/simple-faster-rcnn-pytorch/issues/63)
 
-Then you could specify where caffe-pretraind model `vgg16_caffe.pth` stored in `utils/config.py` by setting `caffe_pretrain_path`. The default path is ok.
+然后，您可以通过设置`utils/config.py`中的`caffe_pretrain_path`参数来指定`caffe`预训练模型`vgg16_caffe.pth`的存储位置. 默认路径为也是hin可以的.
 
-If you want to use pretrained model from torchvision, you may skip this step.
+如果你想要用`torchvision`的预训练模型，则可以跳过此步骤.
 
-**NOTE**, caffe pretrained model has shown slight better performance.
+**注1**：`caffe`预训练模型已表现出更好的性能。
 
-**NOTE**: caffe model require images in BGR 0-255, while torchvision model requires images in RGB and 0-1. See `data/dataset.py`for more detail. 
+**注2**：`caffe`模型要求图片是BGR 0-255的，而`torchvision`模型要求图片是RGB 0-1的. 具体可以查看`data/dataset.py`
 
-### 5.3 begin training
+
+
+### 5.3 开始训练
 
 
 ```bash
 python train.py train --env='fasterrcnn' --plot-every=100
 ```
 
-you may refer to `utils/config.py` for more argument.
+你可以参看 `utils/config.py` 以获取更多参数
 
-Some Key arguments:
+这里是一些关键参数:
 
-- `--caffe-pretrain=False`: use pretrain model from caffe or torchvision (Default: torchvison)
-- `--plot-every=n`: visualize prediction, loss etc every `n` batches.
-- `--env`: visdom env for visualization
-- `--voc_data_dir`: where the VOC data stored
-- `--use-drop`: use dropout in RoI head, default False
-- `--use-Adam`: use Adam instead of SGD, default SGD. (You need set a very low `lr` for Adam)
-- `--load-path`: pretrained model path, default `None`, if it's specified, it would be loaded.
+- `--caffe-pretrain=False`: 使用来自 caffe 还是 torchvision的预训练参数 (默认: torchvison)
+- `--plot-every=n`: 每`n`个batch，可视化一次预测结果与loss值等
+- `--env`: 用于可视化的 `visdom`环境
+- `--voc_data_dir`:  VOC 数据保存的位置
+- `--use-drop`: 是否在RoI头中使用`dropout`，默认是`False`
+- `--use-Adam`: 使用`Adam`而不是`SGD`, 默认是`SGD`. (要是使用Adam,则`lr`应设置得很小)
+- `--load-path`: 预训练模型路径，默认为`None`，如果被指定，那么模型将被加载
 
-you may open browser, visit `http://<ip>:8097` and see the visualization of training procedure as below:
+你可以打开浏览器, 输入`http://<ip>:8097`，就能看到如下所示的训练过程可视化图片：
 
 ![visdom](imgs/visdom-fasterrcnn.png)
 
@@ -178,7 +186,7 @@ you may open browser, visit `http://<ip>:8097` and see the visualization of trai
   
 - 关于 Windows上支持
 
-  由于笔者没有有GPU的windows系统去debug和测试这份代码. 所以如果有人可以帮助我在windows上测试和PR，那将是十分受欢迎的！！
+  由于笔者没有有`GPU`的windows系统去debug和测试这份代码. 所以如果有人可以帮助我在windows上测试和PR，那将是十分受欢迎的！！
 
 
 
@@ -186,8 +194,8 @@ you may open browser, visit `http://<ip>:8097` and see the visualization of trai
 这个项目建立在很多十分nice的项目之上，包括：
 
 - [Yusuke Niitani's ChainerCV](https://github.com/chainer/chainercv) (主要)
-- [Ruotian Luo's pytorch-faster-rcnn](https://github.com/ruotianluo/pytorch-faster-rcnn) which based on [Xinlei Chen's tf-faster-rcnn](https://github.com/endernewton/tf-faster-rcnn)
-- [faster-rcnn.pytorch by Jianwei Yang and Jiasen Lu](https://github.com/jwyang/faster-rcnn.pytorch).It mainly refer to [longcw's faster_rcnn_pytorch](https://github.com/longcw/faster_rcnn_pytorch)
+- 基于[Xinlei Chen's tf-faster-rcnn](https://github.com/endernewton/tf-faster-rcnn) 的 [Ruotian Luo's pytorch-faster-rcnn](https://github.com/ruotianluo/pytorch-faster-rcnn) 
+- [faster-rcnn.pytorch by Jianwei Yang and Jiasen Lu](https://github.com/jwyang/faster-rcnn.pytorch). 该项目主要参考自 [longcw's faster_rcnn_pytorch](https://github.com/longcw/faster_rcnn_pytorch)
 - 所有以上的项目都直接或间接参考了项目 [py-faster-rcnn by Ross Girshick and Sean Bell](https://github.com/rbgirshick/py-faster-rcnn)
 
 
