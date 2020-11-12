@@ -1,13 +1,14 @@
 from pprint import pprint
 
 
-# Default Configs for training
-# NOTE that, config items could be overwriten by passing argument through command line.
-# e.g. --voc-data-dir='./data/'
+# 此文件为用于 training 的默认配置文件
+# 注意 ：配置项可以被通过命令行传进来的参数覆盖
+# 例如 ：--voc-data-dir='./data/'
 
 class Config:
+    
     # data
-    voc_data_dir = '/dataset/PASCAL2007/VOC2007/'
+    voc_data_dir = '~/Dataset/VOC2007/'
     min_size = 600  # image resize
     max_size = 1000 # image resize
     num_workers = 8
@@ -50,8 +51,12 @@ class Config:
     caffe_pretrain = False # use caffe pretrained model instead of torchvision
     caffe_pretrain_path = 'checkpoints/vgg16_caffe.pth'
 
+
     def _parse(self, kwargs):
+
+        # 读取所有的配置属性
         state_dict = self._state_dict()
+        # 迭代新传入的配置, 进行更新操作
         for k, v in kwargs.items():
             if k not in state_dict:
                 raise ValueError('UnKnown Option: "--%s"' % k)
@@ -61,9 +66,13 @@ class Config:
         pprint(self._state_dict())
         print('==========end============')
 
+
     def _state_dict(self):
+        # 该方法的实际作用是剔除 `magic_function`
+
         return {k: getattr(self, k) for k, _ in Config.__dict__.items() \
                 if not k.startswith('_')}
+        # `Config.__dict__` 可以理解一个普通字典，包括之前定义的类属性 
 
 
 opt = Config()

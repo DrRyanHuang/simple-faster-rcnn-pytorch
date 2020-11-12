@@ -98,6 +98,16 @@ class VOCBboxDataset:
             tuple of an image and bounding boxes
 
         """
+        """返回第 i 个例子图片. 
+
+        
+            返回一张RGB彩色图片以及其对应的标注框. 注：图片是 `CHW` 格式的.
+
+        Args(参数)：
+            i （int) : 图片例子的索引——图片序号
+
+
+        """
         id_ = self.ids[i]
         anno = ET.parse(
             os.path.join(self.data_dir, 'Annotations', id_ + '.xml'))
@@ -134,6 +144,7 @@ class VOCBboxDataset:
     __getitem__ = get_example
 
 
+# Pascal VOC2012数据集，有二十个类别
 VOC_BBOX_LABEL_NAMES = (
     'aeroplane',
     'bicycle',

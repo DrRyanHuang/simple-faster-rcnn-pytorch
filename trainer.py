@@ -20,6 +20,11 @@ LossTuple = namedtuple('LossTuple',
                         'roi_cls_loss',
                         'total_loss'
                         ])
+# Returns a new subclass of tuple with named fields. <--- 这句话其实说得听清楚
+# >>> some_var = LossTuple(3, 3, 4, 5, 6)
+# >>> some_var.rpn_loc_loss
+# 3
+# >>> 相当于字典了, 但是 `not subscriptable`
 
 
 class FasterRCNNTrainer(nn.Module):

@@ -46,6 +46,8 @@ def eval(dataloader, faster_rcnn, test_num=10000):
 
 
 def train(**kwargs):
+
+    # 解析传入的新配置，可以读一下 `opt` 对象的类，该类用于存储配置
     opt._parse(kwargs)
 
     dataset = Dataset(opt)
@@ -123,8 +125,18 @@ def train(**kwargs):
         if epoch == 13: 
             break
 
-
 if __name__ == '__main__':
+    
     import fire
+    
+    '''
+    `fire` 是python中用于生成命令行界面(Command Line Interfaces, CLIs)的工具，
+    不需要做任何额外的工作，只需要从主模块中调用 `fire.Fire()`，它会自动将你
+    的代码转化为 `CLI`
 
+    `fire` 用法可以参考这两篇博客：
+        https://blog.csdn.net/u010099080/article/details/70332074
+        https://www.cnblogs.com/my_captain/p/9574560.html (这个博客的UI做的真是太漂亮了)
+    话说，这次用到了 `fire` 以后就不用 `argparse` 嘿嘿，比较省事儿
+    '''
     fire.Fire()
